@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Teste
+{
+    class Atividade1
+    {
+        /*
+            Imagine que temos R$ 1000 investidos na poupança.Quanto dinheiro teremos daqui a um mês, quando 
+            for adicionado o rendimento da poupança ? E depois de um ano ? Use o rendimento 0, 36 % ao mês
+            (em decimal é 0, 0036).Crie um programa com "while" ou "for" usando contador para quantidade de
+            meses.ele deve calcular o rendimento e exibir o valor total ao final.Informe o código do programa. 
+           */
+        static void Main(string[] args)
+        {
+            double poupancaAtual = 1000.0;
+            double juros = 0.0036;
+            int contador;
+
+            for (contador = 1; contador <= 12; contador++)
+            {
+                poupancaAtual += poupancaAtual * juros;
+                if (contador == 1)
+                {
+                    Console.WriteLine("Valor poupança após " + contador + " mês = " + Math.Round(poupancaAtual, 2));
+                }
+                else
+                {
+                    Console.WriteLine("Valor poupança após " + contador + " meses = " + Math.Round(poupancaAtual, 2));
+                }
+            }
+            Console.ReadKey();
+        }
+    }
+}
