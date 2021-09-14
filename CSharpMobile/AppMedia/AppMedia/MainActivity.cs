@@ -42,7 +42,7 @@ namespace AppMedia
             n2 = double.Parse(txtN2.Text);
             n3 = double.Parse(txtN3.Text);
             media = (n1 + n2 + n3) / 3;
-            lblRes.Text = media.ToString(); 
+            lblRes.Text = media.ToString("0.00"); 
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

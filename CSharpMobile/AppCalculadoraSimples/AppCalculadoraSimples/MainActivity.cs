@@ -75,7 +75,7 @@ namespace AppCalculadoraSimples
             n1 = double.Parse(txtN1.Text);
             n2 = double.Parse(txtN2.Text);
             res = n1 + n2;
-            lblRes.Text = res.ToString();
+            lblRes.Text = res.ToString("0.00");
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
