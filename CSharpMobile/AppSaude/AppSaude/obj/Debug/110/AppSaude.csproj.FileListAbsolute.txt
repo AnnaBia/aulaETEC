@@ -8,7 +8,6 @@ C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\bin\Debug\com.com
 C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\MonoAndroid,Version=v11.0.AssemblyAttributes.cs
 C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\build.props
 C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\adb.props
-C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\AppSaude.csproj.AssemblyReference.cache
 C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\stamp\_BuildLibraryImportsCache.stamp
 C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\res.flag
 C:\Users\bia_e\Desktop\aulaETEC\CSharpMobile\AppSaude\AppSaude\obj\Debug\110\lp\38\jl\files.cache

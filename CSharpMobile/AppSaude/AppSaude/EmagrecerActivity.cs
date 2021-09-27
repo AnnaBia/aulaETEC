@@ -14,11 +14,13 @@ namespace AppSaude
     [Activity(Label = "EmagrecerActivity")]
     public class EmagrecerActivity : Activity
     {
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             // Create your application here
+
         }
     }
 }
