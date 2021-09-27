@@ -40,20 +40,44 @@ namespace AppVariasTelas
 
             //instância do adapter
             adaptador = new ArrayAdapter(this,
-                Android.Resource.Layout.SimpleListItem1, times);
+                Android.Resource.Layout.SimpleListItem1, formas);
 
-            //vincula o adaptador ao controle spinner
-            spnTimes.Adapter = adaptador;
+
 
             //vincular o adaptador ao controle listview
-            lstTimes.Adapter = adaptador;
+            lstFormas.Adapter = adaptador;
 
             //Evento click do button
             btnConfirmar.Click += BtnConfirmar_Click;
 
             //Evento click em um item da lista
-            lstTimes.ItemClick += LstTimes_ItemClick;
+            lstFormas.ItemClick += LstFormas_ItemClick;
         }
+
+        private void BtnConfirmar_Click(object sender, System.EventArgs e)
+        {
+            int item = spnEstados.SelectedItemPosition;
+
+            switch (item)
+            {
+                case 0:
+                    estado = "São Paulo";
+                    break;
+                case 1:
+                    estado = "Rio de Janeiro";
+                    break;
+                case 2:
+                    estado = "Minas Gerais";
+                    break;
+            }
+            Toast.MakeText(this, "Estado Selecionado: " + estado, ToastLength.Short).Show();
+        }
+
+        private void LstFormas_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
