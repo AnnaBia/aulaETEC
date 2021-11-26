@@ -275,3 +275,133 @@ insert into Telefone values (18, 13, 61, '2234-4556')
 insert into Telefone values (19, 14, 61, '6221-4453')
 insert into Telefone values (20, 14, 63, '5644-3278')
 go
+
+
+-- 1º)  Selecione todos os livros disponíveis
+select * from Livro where Disponivel = '1'
+
+-- 2º)  Selecione o titulo e a data de aquisição dos livros ordenados pelo titulo
+select Titulo, convert(varchar, dataAquisicao, 103)[Data Aquisição] from Livro order by Titulo
+
+-- 3º) Selecione os 10 últimos livros adquiridos classificados por data de aquisição em ordem decrescente
+select top 10 * from Livro order by dataAquisicao desc
+
+-- 4º) Selecione a quantidade de livros adquiridos no ano de 2013
+select [livrosAdquiridos] = count(*) from Livro where dataAquisicao like '%2013%'
+select count(dataAquisicao) [Livros Adquiridos em 2013] from Livro where year(dataAquisicao) = 2013
+select count(dataAquisicao) [Livros Adquiridos em 2013] from Livro where dataAquisicao between '01/01/2013' and '31/12/2013'
+select count(dataAquisicao) [Livros Adquiridos em 2013] from Livro where dataAquisicao >= '01/01/2013' and dataAquisicao <= '31/12/2013'
+
+-- 5º) Selecione todos os livros da categoria de código 1
+select Livro.Titulo, Categoria.Descrição 
+from Livro inner join Categoria 
+on Livro.idCategoria = Categoria.idCategoria 
+where Livro.idCategoria = '21'
+
+select * from Livro where idCategoria = 21
+
+-- 6º) Selecione o nome e os telefones dos leitores do estado de sp
+select Leitor.Nome, Telefone.Telefone 
+from Leitor inner join Telefone 
+on Leitor.idLeitor = Telefone.idLeitor 
+where Leitor.Estado = 'SP'
+
+-- 7º) Selecione o nomeFantasia, os títulos e subtítulos dos livros publicados pela editora Atica ordenados pelo título
+select Editora.nomeFantasia, Livro.Titulo, Livro.Subtitulo 
+from Editora inner join Livro 
+on Editora.idEditora = Livro.idEditora 
+where Editora.nomeFantasia like '%atica%'
+order by Livro.Titulo
+
+-- 8º) Selecione o nome e o sobrenome do autor e o titulo de todos os livros do autor Dan Brown
+select Autor.Nome, Autor.Sobrenome, Livro.Titulo 
+from Autor
+inner join livroAutor on Autor.idAutor = livroAutor.idAutor
+inner join Livro on livroAutor.idLivro = Livro.idLivro
+where Autor.Nome = 'Dan' and Autor.Sobrenome = 'Brown'
+
+-- 9º) Selecione a descrição da categoria e some o número de páginas de todos os livros agrupados por categoria ordenado pelo total de páginas decrescente
+select Categoria.Descrição, sum(Livro.Paginas) as 'Qtdd de Paginas'
+from Categoria inner join Livro on Categoria.idCategoria = Livro.idCategoria
+group by Categoria. Descrição
+order by 'Qtdd de Paginas' desc
+
+select Categoria.Descrição, sum(Livro.Paginas) as 'Qtdd de Paginas'
+from Categoria inner join Livro on Categoria.idCategoria = Livro.idCategoria
+group by Categoria.Descrição
+order by sum(Livro.Paginas) desc
+
+select Categoria.Descrição, sum(Livro.Paginas) as 'Qtdd de Paginas'
+from Categoria inner join Livro on Categoria.idCategoria = Livro.idCategoria
+group by Categoria.Descrição
+order by 2 desc
+
+-- 10º) Selecione e conte quantos leitores estão aguardando o livro “O pequeno príncipe”
+select count (listaEspera.idLivro)[Leitores aguardando O Pequeno Príncipe]
+from listaEspera inner join Livro on listaEspera.idLivro = Livro.idLivro
+where Livro.Titulo = 'o pequeno principe'
+
+select count(idLivro) 'Leitores aguardando O Pequeno Príncipe'
+from listaEspera where idLivro = (Select idLivro from Livro where Titulo = 'o pequeno principe')
+
+-- 11º) Selecione e exiba média de páginas lidas pelos leitores
+select avg(Paginas) as 'Media de paginas lidas'
+from Livro inner join itemEmprestado
+on Livro.idLivro = itemEmprestado.idLivro
+
+-- 12º) Mostre a média de páginas dos livros da biblioteca
+select avg(Paginas) as 'Media de paginas' from Livro
+
+-- 13º) Mostre a quantidade de Leitores da biblioteca
+select Qtdd_Leitores = count(idLeitor) from Leitor
+
+-- 14º) Mostre o nome das coleções e os títulos dos livros das coleções]
+select Colecao.nomeColecao, Livro.Titulo
+from Colecao
+inner join livroColecao on Colecao.idColecao = livroColecao.idColecao
+inner join Livro on livroColecao.idLivro = Livro.idLivro
+
+-- 15º) Mostre a quantidade de livros por coleção
+select Colecao.nomeColecao, count(Livro.Titulo) as 'Qtdd de livros por coleção'
+from Colecao
+inner join livroColecao on Colecao.idColecao = livroColecao.idColecao
+inner join Livro on livroColecao.idLivro = Livro.idLivro
+group by Colecao.nomeColecao
+
+-- 16º) Mostre o Título e conte a quantidade de empréstimos dos livros emprestados este mês
+select Livro.Titulo, count(itemEmprestado.idLivro) as 'Livros emprestados'
+from Livro 
+inner join itemEmprestado on Livro.idLivro = itemEmprestado.idLivro
+inner join Emprestimo on Emprestimo.idEmprestimo = itemEmprestado.idEmprest
+where month(Emprestimo.dataEmprestimo) = 08 and year(Emprestimo.dataEmprestimo) = 2012
+group by Livro.Titulo
+
+-- 17º) Selecione o nome, os telefones e o tipo do telefone todos os leitores do estado de RJ e ES e tipo celular
+select Leitor.Nome, Telefone.Telefone, tipoTelefone.tipoTelefone
+from Leitor 
+inner join Telefone on Leitor.idLeitor = Telefone.idLeitor
+inner join tipoTelefone on Telefone.idLeitor = Telefone.idLeitor
+where Leitor.Estado = 'RJ'
+
+-- 18º) Selecione o título dos livros que nunca foram emprestados
+select Livro.Titulo
+from Livro
+left join itemEmprestado on Livro.idLivro = itemEmprestado.idLivro
+where itemEmprestado.idLivro is null
+
+select Titulo from Livro where idLivro not in(select distinct idLivro from itemEmprestado)
+
+-- 19º) Selecione o nome dos leitores que nunca realizaram empréstimos 
+select Leitor.Nome
+from Emprestimo
+right join Leitor on Emprestimo.idLeitor = Leitor.idLeitor
+where Emprestimo.idLeitor is null
+
+select Nome from Leitor where idLeitor not in(select distinct idLeitor from Emprestimo) order by Nome
+
+-- 20º) Selecione a descrição da categoria que nunca teve livros emprestados
+select Descrição
+from Categoria 
+where idCategoria not in
+(select distinct idCategoria from Livro inner join itemEmprestado
+on Livro.idLivro = itemEmprestado.idLivro)
