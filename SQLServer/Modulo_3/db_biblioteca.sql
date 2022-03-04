@@ -578,6 +578,19 @@ INNER JOIN editora ON livro.ideditora = editora.ideditora
 INNER JOIN categoria ON livro.idcategoria = categoria.idcategoria
 ORDER BY Colecao.nome,livro.titulo
 
+-- Correção
+SELECT "COLEÇÃO" = COLECAO.NOME, LIVRO.titulo, 
+AUTOR = CONCAT(AUTOR.nome, SPACE(1), AUTOR.sobrenome),
+EDITORA = EDITORA.nome, CATEGORIA = CATEGORIA.descrição, LIVRO.paginas
+FROM COLECAO 
+INNER JOIN LIVROCOL ON COLECAO.idcol = livrocol.idcol
+INNER JOIN LIVRO ON LIVRO.idlivro = livrocol.idLIVRO
+INNER JOIN LIVROAUTOR ON livroautor.idlivro = livro.idlivro
+INNER JOIN AUTOR ON AUTOR.idautor = livroautor.idautor
+INNER JOIN EDITORA ON editora.ideditora = livro.ideditora
+INNER JOIN CATEGORIA ON categoria.idcategoria = livro.idcategoria
+ORDER BY Colecao.nome, livro.titulo
+
 -- 2 - Selecione o nome do leitor e some quantas páginas cada um já leu ordenados pela quantidade de páginas decrescente
 SELECT Leitor.nome, SUM(livro.paginas)[Qtdd de páginas lidas]
 FROM Leitor
@@ -587,6 +600,17 @@ INNER JOIN livro ON ItemEmprestado.idlivro = livro.idlivro
 GROUP BY Leitor.nome
 ORDER BY 2 DESC
 
+-- Correção
+SELECT LEITOR.NOME AS LEITOR, SUM(LIVRO.PAGINAS) AS [PÁGINAS LIDAS]
+FROM LEITOR 
+INNER JOIN EMPRESTIMO ON LEITOR.idleitor = emprestimo.idleitor
+INNER JOIN ItemEmprestado ON ItemEmprestado.idemprest = emprestimo.idemprest
+INNER JOIN LIVRO ON ItemEmprestado.idlivro = livro.idlivro
+GROUP BY LEITOR.NOME
+ORDER BY 2 DESC 
+-- ORDER BY [PÁGINAS LIDAS]
+-- ORDER BY SUM(LIVRO.PAGINAS)
+
 -- 3 - Selecione o nome e o sobrenome do autor e some a quantidade de paginas de cada autor, ordenados pela quantidade de páginas ascendente
 SELECT CONCAT(Autor.nome,' ', Autor.sobrenome)[Autor], SUM(livro.paginas)[Qttd de páginas escritas]
 FROM Autor
@@ -595,6 +619,15 @@ INNER JOIN livro ON livroautor.idlivro = livro.idlivro
 GROUP BY Autor.nome, Autor.sobrenome
 ORDER BY [Qttd de páginas escritas] ASC
 
+-- Correção
+SELECT AUTOR = CONCAT(AUTOR.NOME, SPACE(1), AUTOR.SOBRENOME),
+PAGINAS = SUM(LIVRO.PAGINAS)
+FROM AUTOR, LIVROAUTOR,LIVRO
+WHERE AUTOR.idautor = livroautor.idautor
+AND LIVRO.idlivro = LIVROAUTOR.idlivro
+GROUP BY CONCAT(AUTOR.NOME, SPACE(1), AUTOR.SOBRENOME)
+ORDER BY PAGINAS
+
 -- 4 - Selecione o nome o os telefones dos leitores que nunca realizaram empréstimos ordenados pelo nome
 SELECT Leitor.nome, telefone.telefone
 FROM emprestimo
@@ -602,6 +635,22 @@ RIGHT JOIN Leitor ON emprestimo.idleitor = Leitor.idleitor
 RIGHT JOIN telefone ON Leitor.idleitor = telefone.idleitor
 WHERE emprestimo.idleitor IS NULL 
 ORDER BY Leitor.nome 
+
+-- Correção
+SELECT LEITOR = LEITOR.NOME, TELEFONE.telefone 
+FROM LEITOR INNER JOIN TELEFONE 
+ON LEITOR.IDLEITOR = TELEFONE.idleitor
+WHERE LEITOR.IDLEITOR NOT IN 
+(SELECT DISTINCT IDLEITOR FROM EMPRESTIMO)
+ORDER BY LEITOR
+
+SELECT LEITOR.NOME, TELEFONE.TELEFONE
+FROM LEITOR LEFT JOIN TELEFONE
+ON LEITOR.IDLEITOR = TELEFONE.IDLEITOR
+LEFT JOIN EMPRESTIMO 
+ON LEITOR.idleitor = emprestimo.idleitor
+WHERE EMPRESTIMO.IDLEITOR IS NULL
+ORDER BY 1
 
 -- 5 - Selecione o título do livro, a categoria, o nome e sobrenome dos autores dos livros que nunca foram emprestados.
 SELECT livro.titulo, categoria.descrição, CONCAT(Autor.nome,' ', Autor.sobrenome)[Autor]
@@ -613,10 +662,28 @@ RIGHT JOIN Autor ON livroautor.idautor = Autor.idautor
 RIGHT JOIN categoria ON livro.idcategoria = categoria.idcategoria
 WHERE ItemEmprestado.idlivro IS NULL
 
+-- Correção
+SELECT LIVRO.TITULO, CATEGORIA = categoria.descrição, 
+AUTOR = CONCAT(AUTOR.NOME, SPACE(1), AUTOR.SOBRENOME) 
+FROM LIVRO 
+LEFT JOIN CATEGORIA ON LIVRO.idcategoria = categoria.idcategoria
+LEFT JOIN LIVROAUTOR ON LIVRO.idlivro = livroautor.IDLIVRO
+LEFT JOIN AUTOR ON LIVROAUTOR.idautor = AUTOR.idautor
+WHERE LIVRO.IDLIVRO NOT IN (SELECT DISTINCT IDLIVRO FROM ITEMEMPRESTADO)
+
+SELECT LIVRO.TITULO, CATEGORIA = categoria.descrição, 
+AUTOR = CONCAT(AUTOR.NOME, SPACE(1), AUTOR.SOBRENOME)
+FROM LIVRO 
+LEFT JOIN CATEGORIA ON LIVRO.idcategoria = categoria.idcategoria
+LEFT JOIN LIVROAUTOR ON LIVRO.idlivro = livroautor.IDLIVRO
+LEFT JOIN AUTOR ON LIVROAUTOR.idautor = AUTOR.idautor
+LEFT JOIN ITEMEMPRESTADO ON ItemEmprestado.idlivro = LIVRO.idlivro
+WHERE ItemEmprestado.idlivro IS NULL
+
 -- 6 - Selecione o título do livro, o nome e sobrenome dos autores e conte quantas vezes o livro já foi emprestado, ordenados pela quantidade de vezes que o livro foi emprestado decrescente.
-SELECT livro.titulo, CONCAT(Autor.nome,' ', Autor.sobrenome)[Autor], COUNT(ItemEmprestado.idlivro)[Vezes em que o livro foi emprestado]
-FROM emprestimo
-INNER JOIN ItemEmprestado ON emprestimo.idemprest = ItemEmprestado.idemprest
+SELECT livro.titulo, CONCAT(Autor.nome,' ', Autor.sobrenome)[Autor], 
+COUNT(ItemEmprestado.idlivro)[Vezes em que o livro foi emprestado]
+FROM  ItemEmprestado 
 INNER JOIN livro ON ItemEmprestado.idlivro = livro.idlivro
 INNER JOIN livroautor ON livro.idlivro = livroautor.idlivro
 INNER JOIN Autor ON livroautor.idautor = Autor.idautor
@@ -632,10 +699,16 @@ INNER JOIN livro ON ItemEmprestado.idlivro = livro.idlivro
 GROUP BY Leitor.nome
 ORDER BY [Qtdd de livros emprestados] DESC
 
+-- Correção
+Select Leitor.Nome, count(emprestimo.idleitor) as Quantidade 
+from Leitor 
+inner join Emprestimo on Leitor.idleitor = EmpreStimo.IdLeitor 
+group by leitor.nome
+order by quantidade desc
+
 -- 8 - Selecione o título do livro, a categoria, a editora e conte quantos empréstimos foram feitos de cada livro ordenados pela quantidade
 SELECT livro.titulo, categoria.descrição, editora.nome, COUNT(ItemEmprestado.idlivro)[Qtdd de empréstimos]
-FROM emprestimo
-INNER JOIN ItemEmprestado ON emprestimo.idemprest = ItemEmprestado.idemprest
+FROM ItemEmprestado
 INNER JOIN livro ON ItemEmprestado.idlivro = livro.idlivro
 INNER JOIN categoria ON livro.idcategoria = categoria.idcategoria
 INNER JOIN editora ON livro.ideditora = editora.ideditora
@@ -650,16 +723,24 @@ INNER JOIN espera ON livro.idlivro = espera.idlivro
 INNER JOIN Leitor ON espera.idleitor = Leitor.idleitor
 
 --10 - Selecione o idemprestimo, a data de retirada, o nome do leitor, os telefones e seus tipos, o titulo dos livros, a categoria, a editora, o nome e sobrenome dos autores e o nome da coleção dos livros emprestados que pertencem à uma coleção.
-SELECT emprestimo.idemprest, emprestimo.dataemprest, Leitor.nome,telefone.telefone,tipo.tipo,livro.titulo,categoria.idcategoria,editora.nome,Autor.nome,Autor.sobrenome, Colecao.nome
+SELECT emprestimo.idemprest, CONVERT(varchar, emprestimo.dataemprest, 103)[Data de retirada], Leitor.nome[Leitor],telefone.telefone,tipo.tipo[tipo telefone],livro.titulo[Livro],categoria.descrição[Categoria],editora.nome[Editora],CONCAT(Autor.nome,Autor.sobrenome)[Autor], Colecao.nome[Coleção]
 FROM tipo
 INNER JOIN telefone ON tipo.idtipo = TELEFONE.idtipo
 INNER JOIN Leitor ON telefone.idleitor = Leitor.idleitor
 INNER JOIN emprestimo ON Leitor.idleitor = emprestimo.idleitor
 INNER JOIN ItemEmprestado ON emprestimo.idemprest = ItemEmprestado.idemprest
 INNER JOIN livro ON ItemEmprestado.idlivro = livro.idlivro
-INNER JOIN livroautor ON livro.idlivro = livroautor.idautor
+INNER JOIN livroautor ON livro.idlivro = livroautor.idlivro
 INNER JOIN Autor ON livroautor.idautor = Autor.idautor
 INNER JOIN livrocol ON livrocol.idlivro = livro.idlivro
 INNER JOIN Colecao ON livrocol.idcol = Colecao.idcol
 INNER JOIN categoria ON livro.idcategoria = categoria.idcategoria
 INNER JOIN editora ON livro.ideditora = editora.ideditora
+
+-- Exemplos de funções
+SELECT REVERSE(livro.titulo) Inverso FROM livro
+SELECT DATEDIFF(HH, '2021-03-03', '2022-03-03') Horas
+SELECT DATEDIFF(DD, '2021-03-03', '2022-03-03') Dias
+SELECT DATEDIFF(MM, '2021-03-03', '2022-03-03') Meses
+SELECT DATEDIFF(YY, '2021-03-03', '2022-03-03') Anos
+SELECT YEAR(emprestimo.dataemprest)[Ano empréstimo] FROM emprestimo
