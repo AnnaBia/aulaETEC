@@ -1,0 +1,55 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Saúde </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Saúde</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="10">
+        <ion-item>
+          <ion-label position="fixed">Altura</ion-label>
+          <ion-input
+            type="text"
+            maxlength="4"
+            class="ion-text-center"
+            [(ngModel)]="altura"
+          ></ion-input>
+        </ion-item>
+
+        <ion-list>
+          <ion-item>
+            <ion-label>Sexo</ion-label>
+            <ion-select
+              [interfaceOptions]="customPopoverOptions"
+              interface="popover"
+              placeholder="Selecione"
+              [(ngModel)]="opcao"
+            >
+              <ion-select-option>Selecione</ion-select-option>
+              <ion-select-option value="fem">Feminino</ion-select-option>
+              <ion-select-option value="masc">Masculino</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+        <br />
+        <ion-button
+          size="small"
+          color="success"
+          shape="round"
+          full
+          (click)="calculaPeso()"
+          >Peso Ideal</ion-button
+        >
+        <p color="green"><br />{{ resConv }}</p>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>

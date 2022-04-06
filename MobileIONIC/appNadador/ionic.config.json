@@ -1,0 +1,7 @@
+{
+  "name": "appNadador",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
